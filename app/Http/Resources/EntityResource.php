@@ -19,6 +19,15 @@ class EntityResource extends JsonResource
             'email'          => $this->email,
             'internal_notes' => $this->when($request->user()?->isOperator(), $this->internal_notes),
             'contacts_count' => $this->whenCounted('contacts'),
+            'contacts'       => $this->whenLoaded('contacts', fn () => $this->contacts->map(fn ($c) => [
+                'id'    => $c->id,
+                'name'  => $c->name,
+                'email' => $c->email,
+                'phone' => $c->phone,
+                'role'  => $c->relationLoaded('role') && $c->role
+                    ? ['id' => $c->role->id, 'name' => $c->role->name]
+                    : null,
+            ])),
         ];
     }
 }

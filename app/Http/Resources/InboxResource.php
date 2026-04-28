@@ -15,6 +15,10 @@ class InboxResource extends JsonResource
             'slug'            => $this->slug,
             'description'     => $this->description,
             'operators_count' => $this->whenCounted('operators'),
+            'operators'       => $this->whenLoaded('operators', fn () => $this->operators->map(fn ($op) => [
+                'id'   => $op->id,
+                'name' => $op->name,
+            ])),
         ];
     }
 }
